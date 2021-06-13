@@ -7,7 +7,12 @@ const UseEffectBasics = () => {
 
 	useEffect(() => {
 		Value > 0 && (document.title = `New messages(${Value})`);
-	});
+	}, [Value]);
+
+	useEffect(() => {
+		// Este useEffec solo se renderiza una vez porque el array de dependencias esta vacio.
+		console.log('Hola, yo solo me renderizo una sola vez')
+	}, [])
 
 	return (
 		<>
