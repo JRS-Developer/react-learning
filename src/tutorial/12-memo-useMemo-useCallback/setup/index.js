@@ -10,6 +10,20 @@ const url = 'https://course-api.com/javascript-store-products';
 const Index = () => {
 	const { products } = useFetch(url);
 	const [count, setCount] = useState(0);
+	const [cart, setCart] = useState(0);
+
+	// *useCallBack permite que al pasar una funcion como prop a componentes hijos, pues que al cambiar el estado pues que compruebe que el valor haya cambiado y en ese caso si rerenderizar. Es similar a memmo pero con funciones.
+
+	// *Usando useCallBack
+	const addToCart = useCallback(() => {
+		setCart(cart + 1);
+	}, [cart]);
+
+	// *Sin usar useCallBack. Revisa la consola en Developer Tools para ver la diferencia
+
+	// const addToCart = () => {
+	// 	setCart(cart + 1);
+	// };
 
 	return (
 		<>
@@ -17,15 +31,16 @@ const Index = () => {
 			<button className='btn' onClick={() => setCount(count + 1)}>
 				click me
 			</button>
-			<BigList products={products} />
+			<h1 style={{ marginTop: '1rem' }}>cart : {cart}</h1>
+			<BigList products={products} addToCart={addToCart} />
 		</>
 	);
 };
 
-// React.memo permite evitar el rerenderizado cada vez que se ejecute el useState del objecto padre.
-// Solo se va a rerenderizar cuando el prop que le estamos pasando al componente cambie, en este caso es {products}
+// *React.memo permite evitar el rerenderizado cada vez que se ejecute el useState del objecto padre.
+// *Solo se va a rerenderizar cuando el prop que le estamos pasando al componente cambie, en este caso es {products}
 
-const BigList = React.memo(({ products }) => {
+const BigList = React.memo(({ products, addToCart }) => {
 	useEffect(() => {
 		console.log('Hola, yo me voy a repetir');
 	});
@@ -36,6 +51,7 @@ const BigList = React.memo(({ products }) => {
 					<SingleProduct
 						key={product.id}
 						{...product}
+						addToCart={addToCart}
 					></SingleProduct>
 				);
 			})}
@@ -43,7 +59,7 @@ const BigList = React.memo(({ products }) => {
 	);
 });
 
-const SingleProduct = ({ fields }) => {
+const SingleProduct = ({ fields, addToCart }) => {
 	let { name, price } = fields;
 	price = price / 100;
 	const image = fields.image[0].url;
@@ -57,6 +73,7 @@ const SingleProduct = ({ fields }) => {
 			<img src={image} alt={name} />
 			<h4>{name}</h4>
 			<p>${price}</p>
+			<button onClick={addToCart}>Add to cart</button>
 		</article>
 	);
 };
