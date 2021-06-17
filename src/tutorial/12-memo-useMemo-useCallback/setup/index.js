@@ -7,6 +7,19 @@ const url = 'https://course-api.com/javascript-store-products';
 
 // every time props or state changes, component re-renders
 
+const calculateMostExpensive = (data) => {
+	console.log('Hello');
+	return (
+		data.reduce((total, item) => {
+			const price = item.fields.price;
+			if (price >= total) {
+				total = price;
+			}
+			return total;
+		}, 0) / 100
+	);
+};
+
 const Index = () => {
 	const { products } = useFetch(url);
 	const [count, setCount] = useState(0);
@@ -25,6 +38,12 @@ const Index = () => {
 	// 	setCart(cart + 1);
 	// };
 
+	// *useMemo almacena el dato que se obtiene de una funcion entre renderizados, si el dato que esta en dependencias en este caso es: [products] cambia pues se ejecuta la funcion, sino no.
+	const MostExpensive = useMemo(
+		() => calculateMostExpensive(products),
+		[products]
+	);
+
 	return (
 		<>
 			<h1>Count : {count}</h1>
@@ -32,13 +51,14 @@ const Index = () => {
 				click me
 			</button>
 			<h1 style={{ marginTop: '1rem' }}>cart : {cart}</h1>
+			<h1>Most Expensive : {MostExpensive}</h1>
 			<BigList products={products} addToCart={addToCart} />
 		</>
 	);
 };
 
 // *React.memo permite evitar el rerenderizado cada vez que se ejecute el useState del objecto padre.
-// *Solo se va a rerenderizar cuando el prop que le estamos pasando al componente cambie, en este caso es {products}
+// *SOLO se va a rerenderizar cuando el prop que le estamos pasando al componente cambie, en este caso es {products}
 
 const BigList = React.memo(({ products, addToCart }) => {
 	useEffect(() => {
