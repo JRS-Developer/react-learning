@@ -38,7 +38,7 @@ const Index = () => {
 	// 	setCart(cart + 1);
 	// };
 
-	// *useMemo almacena el dato que se obtiene de una funcion entre renderizados, si el dato que esta en dependencias en este caso es: [products] cambia pues se ejecuta la funcion, sino no.
+	// *useMemo almacena el dato que se obtiene de una funcion entre renderizados, si el dato que esta en dependencias en este caso es: [products], si cambia pues se ejecuta la funcion, sino no.
 	const MostExpensive = useMemo(
 		() => calculateMostExpensive(products),
 		[products]
